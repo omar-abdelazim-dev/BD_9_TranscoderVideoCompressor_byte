@@ -22,6 +22,10 @@ docker compose up --build
 
 The API is then available at `http://localhost:3000`.
 
+## Render live-demo deployment
+
+The included `render.yaml` Blueprint deploys this Docker image with FFmpeg, a managed Redis instance, and a combined API/worker process for a public demo. In Render, choose **New > Blueprint**, connect this repository, and approve the generated `transcoder-video-byte` services. Render's free web-service disk is temporary, so completed media is a demo asset rather than permanent storage; use object storage for a production deployment.
+
 ## Local development
 
 Requirements: Node.js 22.5+, Redis, and FFmpeg (`ffmpeg -version`).

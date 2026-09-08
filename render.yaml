@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: transcoder-video-byte
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    dockerCommand: node src/combined.js
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: transcoder-video-redis
+          property: connectionString
+      - key: STORAGE_ROOT
+        value: /tmp/transcoder-storage
+  - type: keyvalue
+    name: transcoder-video-redis
+    plan: free
+    maxmemoryPolicy: noeviction
+    persistenceMode: off
+    ipAllowList: []
