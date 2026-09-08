@@ -1,0 +1,25 @@
+services:
+  redis:
+    image: redis:8-alpine
+    command: redis-server --appendonly yes
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+  api:
+    build: .
+    environment: { REDIS_URL: redis://redis:6379, STORAGE_ROOT: /app/storage }
+    ports: ["3000:3000"]
+    volumes: [media-data:/app/storage]
+    depends_on: { redis: { condition: service_healthy } }
+  worker:
+    build: .
+    command: node src/worker.js
+    environment: { REDIS_URL: redis://redis:6379, STORAGE_ROOT: /app/storage }
+    volumes: [media-data:/app/storage]
+    depends_on: { redis: { condition: service_healthy } }
+volumes:
+  redis-data:
+  media-data:
